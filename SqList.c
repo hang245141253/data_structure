@@ -102,35 +102,36 @@ int main() {
     }
     printf("length is %d\n", L.length);
     printf("\n*********************\n");
+
     // 取值
     int e;
     printf("GetElem %d(1 == succeed)", GetElem(L, 5, &e));
     printf(", e value is %d\n", e);
     printf("\n*********************\n");
+    
     // 查找
     printf("LocateElem value e=5 at LOC(%d)\n", LocateElem(L, e));
     printf("\n*********************\n");
-    
-    {
-        int index = 10;
-        int value = 100;
 
-        // 删除
-        printf("ListDelete %d(1 == succeed)", ListDelete(&L, index));
-        printf(", length is %d", L.length);
-        printf(", Delete LOC(%d)\n", index);
-        for (int j = 0; j < L.length; j++) {
-            printf("L.elem[%d] is %d\n", j, L.elem[j]);
-        }
-        printf("\n*********************\n");
+    int index = 10;
+    int value = 100;
 
-        // 插入
-        printf("ListInsert %d(1 == succeed)", ListInsert(&L, index, value));
-        printf(", length is %d", L.length);
-        printf(", Insert %d at LOC(%d)\n", value, index);
-        for (int j = 0; j < L.length; j++) {
-            printf("L.elem[%d] is %d\n", j, L.elem[j]);
-        }
+    // 删除
+    printf("ListDelete %d(1 == succeed)", ListDelete(&L, index));
+    printf(", length is %d", L.length);
+    printf(", Delete LOC(%d)\n", index);
+    for (int j = 0; j < L.length; j++) {
+        printf("L.elem[%d] is %d\n", j, L.elem[j]);
     }
+    printf("\n*********************\n");
+
+    // 插入
+    printf("ListInsert %d(1 == succeed)", ListInsert(&L, index, value));
+    printf(", length is %d", L.length);
+    printf(", Insert %d at LOC(%d)\n", value, index);
+    for (int j = 0; j < L.length; j++) {
+        printf("L.elem[%d] is %d\n", j, L.elem[j]);
+    }
+
     return 0;
 }
