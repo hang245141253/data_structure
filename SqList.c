@@ -1,4 +1,4 @@
-#include <stdio.h>
+/* #include <stdio.h>
 #include <stdlib.h>
 #define OK 1
 #define ERROR 0
@@ -54,7 +54,7 @@ int LocateElem(SqList L, ElemType e) {
 
 // 算法2.4 顺序表的插入
 Status ListInsert(SqList* L, int i, ElemType e) {
-    if (i < 1 || i > L->length + 1) {
+    if (i < 1 || i > L->length + 1) {   //length + 1则可以直接插入尾部 
         return ERROR;  // i∈[i, length + 1]
     }
     if (L->length >= L->listsize) {
@@ -108,7 +108,7 @@ int main() {
     printf("GetElem %d(1 == succeed)", GetElem(L, 5, &e));
     printf(", e value is %d\n", e);
     printf("\n*********************\n");
-    
+
     // 查找
     printf("LocateElem value e=5 at LOC(%d)\n", LocateElem(L, e));
     printf("\n*********************\n");
@@ -134,4 +134,4 @@ int main() {
     }
 
     return 0;
-}
+} */
