@@ -42,7 +42,7 @@ Status GetElem(SqList L, int i, ElemType* e) {
     return OK;
 }
 
-// 算法2.3 查找
+// 算法2.3 顺序表的查找
 int LocateElem(SqList L, ElemType e) {
     for (int j = 0; j < L.length; j++) {
         if (L.elem[j] == e) {
@@ -52,20 +52,33 @@ int LocateElem(SqList L, ElemType e) {
     return 0;   //查找失败
 }// 因为返回值有非0、1的值，所以用int 不用Status
 
-// 算法2.4 插入
-Status ListInsert(SqList L, int i, ElemType e) {
-    if (i < 1 || i > L.length) {
+// 算法2.4 顺序表的插入
+Status ListInsert(SqList* L, int i, ElemType e) {
+    if (i < 1 || i > L->length) {
         return ERROR;   //i∈[i, length]
     }
-    if (L.length >= L.listsize) {
+    if (L->length >= L->listsize) {
         return ERROR; // or 扩容
     }
-    for (int j = L.length - 1; j >= i - 1; j--) { //记j为数组下标
-        L.elem[j + 1] = L.elem[j];  //插入位置及之后元素后移
+    for (int j = L->length - 1; j >= i - 1; j--) { //记j为数组下标
+        L->elem[j + 1] = L->elem[j];  //插入位置及之后元素后移
     }
-    L.elem[i - 1] = e;  //在位置i插入元素 (记i - 1为数组下标)
-    L.length++;         //表长+1
+    L->elem[i - 1] = e;  //在位置i插入元素 (记i - 1为数组下标)
+    L->length++;         //表长+1
     return OK;
+}
+
+// 算法2.5 顺序表的删除
+Status ListDelete(SqList* L, int i) {
+    if (i < 1 || i > L->length) {
+        return ERROR;
+    }
+    for (int j = i - 1; j < L->length - 1; j++) {
+        L->elem[j] = L->elem[j + 1];
+    }
+    L->length--;
+    return OK;
+    
 }
 
 int main() {
