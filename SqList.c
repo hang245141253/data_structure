@@ -38,7 +38,7 @@ Status GetElem(SqList L, int i, ElemType* e) {
         return ERROR;
     }
     *e = L.elem[i - 1];  //数组下标j = 位序i - 1
-    printf("GetElem %d at LOC(%d)\n", *e, i);
+    printf("GetElem LOC(%d) to e=%d\n", i, *e);
     return OK;
 }
 
@@ -54,8 +54,8 @@ int LocateElem(SqList L, ElemType e) {
 
 // 算法2.4 顺序表的插入
 Status ListInsert(SqList* L, int i, ElemType e) {
-    if (i < 1 || i > L->length) {
-        return ERROR;  // i∈[i, length]
+    if (i < 1 || i > L->length + 1) {
+        return ERROR;  // i∈[i, length + 1]
     }
     if (L->length >= L->listsize) {
         return ERROR;  // or 扩容
@@ -83,9 +83,54 @@ Status ListDelete(SqList* L, int i) {
 int main() {
     SqList L;
     InitList(&L);
+    printf("\n*********************\n");
     /*下面是错的
     SqList* L;  //L是存SqList类型的指针
     InitList(L);//未初始化 野指针
     */
+
+    // 每个位置插入对应位序i的值
+    for (int j = 0; j < L.listsize; j++) {
+        L.elem[j] = j + 1;  // 数组下标 + 1 = 位序
+        L.length++;
+    }
+
+    // 遍历
+    for (int j = 0; j < L.listsize; j++) {
+        // j && printf(" ");
+        printf("L.elem[%d] is %d\n", j, L.elem[j]);
+    }
+    printf("length is %d\n", L.length);
+    printf("\n*********************\n");
+    // 取值
+    int e;
+    printf("GetElem %d(1 == succeed)", GetElem(L, 5, &e));
+    printf(", e value is %d\n", e);
+    printf("\n*********************\n");
+    // 查找
+    printf("LocateElem value e=5 at LOC(%d)\n", LocateElem(L, e));
+    printf("\n*********************\n");
+    
+    {
+        int index = 10;
+        int value = 100;
+
+        // 删除
+        printf("ListDelete %d(1 == succeed)", ListDelete(&L, index));
+        printf(", length is %d", L.length);
+        printf(", Delete LOC(%d)\n", index);
+        for (int j = 0; j < L.length; j++) {
+            printf("L.elem[%d] is %d\n", j, L.elem[j]);
+        }
+        printf("\n*********************\n");
+
+        // 插入
+        printf("ListInsert %d(1 == succeed)", ListInsert(&L, index, value));
+        printf(", length is %d", L.length);
+        printf(", Insert %d at LOC(%d)\n", value, index);
+        for (int j = 0; j < L.length; j++) {
+            printf("L.elem[%d] is %d\n", j, L.elem[j]);
+        }
+    }
     return 0;
 }
