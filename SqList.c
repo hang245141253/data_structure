@@ -5,6 +5,10 @@
 #define OVERFLOW -2
 
 #define LIST_INIT_SIZE 10
+#define LISTINCREMENT 10
+
+#define COLOR(a, b) "\033[" #b "m" a "\033[0m"
+#define GREEN(a) COLOR(a, 32)
 
 // Status视为bool型，OK即为True，ERROR即为false
 typedef int Status;
@@ -58,7 +62,15 @@ Status ListInsert(SqList* L, int i, ElemType e) {
         return ERROR;                  // i∈[i, length + 1]
     }
     if (L->length >= L->listsize) {
-        return ERROR;  // or 扩容
+        ElemType* newbase = (ElemType*)realloc(L->elem,
+                                               (L->listsize + LISTINCREMENT) * sizeof(ElemType));
+        if (newbase == NULL) {
+            exit(OVERFLOW);
+        }
+        L->elem = newbase;
+        L->listsize += LISTINCREMENT;
+        printf(GREEN("expand succeed! and now L.listsize = %d\n"), L->listsize);
+        // return ERROR;  // or 扩容
     }
     for (int j = L->length - 1; j >= i - 1; j--) {  //记j为数组下标
         L->elem[j + 1] = L->elem[j];                //插入位置及之后元素后移
@@ -115,6 +127,7 @@ int main() {
 
     int index = 10;
     int value = 100;
+    int value2 = 200;
 
     // 删除
     printf("ListDelete %d(1 == succeed)", ListDelete(&L, index));
@@ -125,10 +138,18 @@ int main() {
     }
     printf("\n*********************\n");
 
-    // 插入
+    // 插入1
     printf("ListInsert %d(1 == succeed)", ListInsert(&L, index, value));
     printf(", length is %d", L.length);
     printf(", Insert %d at LOC(%d)\n", value, index);
+    for (int j = 0; j < L.length; j++) {
+        printf("L.elem[%d] is %d\n", j, L.elem[j]);
+    }
+
+    // 插入2
+    printf("ListInsert %d(1 == succeed)", ListInsert(&L, index, value2));
+    printf(", length is %d", L.length);
+    printf(", Insert %d at LOC(%d)\n", value2, index);
     for (int j = 0; j < L.length; j++) {
         printf("L.elem[%d] is %d\n", j, L.elem[j]);
     }
