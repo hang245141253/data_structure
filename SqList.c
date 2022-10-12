@@ -71,12 +71,12 @@ Status ListInsert(SqList* L, int i, ElemType e) {
 // 算法2.5 顺序表的删除
 Status ListDelete(SqList* L, int i) {
     if (i < 1 || i > L->length) {
-        return ERROR;
+        return ERROR;   //i∈[i, length]
     }
     for (int j = i - 1; j < L->length - 1; j++) {
-        L->elem[j] = L->elem[j + 1];
+        L->elem[j] = L->elem[j + 1];    //被删除元素之后的元素前移
     }
-    L->length--;
+    L->length--;        //表长-1
     return OK;
     
 }
