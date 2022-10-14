@@ -15,13 +15,16 @@ typedef int Status;
 
 // 顺序表元素类型定义
 typedef int ElemType;
+/*ElemType：
+既可以是基本数据类型int、float、char等；
+又可以是构造数据类型struct结构体*/
 
 typedef struct {
     ElemType* elem;
     int listsize;
     int length;
 } SqList;
-// *在定义指针，声明指针时靠近前方，靠近后方时理解为解引用
+// *在定义指针、声明指针时靠近前方，靠近后方时理解为解引用
 
 // 算法2.1 顺序表的初始化
 Status InitList(SqList* L) {
