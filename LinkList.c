@@ -13,7 +13,21 @@
 // Status视为bool型，OK即为True，ERROR即为false
 typedef int Status;
 
+// 链表元素类型定义
+typedef int ElemType;   
+/*ElemType：
+既可以是基本数据类型int、float、char等；
+又可以是构造数据类型struct结构体*/
+
+typedef struct LNode {
+    Elemtype data;
+    struct LNode* next;
+} LNode, *LinkList;
+
+
+
 // 算法2.6 单链表的初始化
+
 
 int main() {
     
