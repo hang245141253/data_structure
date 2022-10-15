@@ -20,13 +20,16 @@ typedef int ElemType;
 又可以是构造数据类型struct结构体*/
 
 typedef struct LNode {
-    Elemtype data;
-    struct LNode* next;
-} LNode, *LinkList;
-
-
+    ElemType data;  //结点的数据域
+    struct LNode* next; //结点的指针域
+} LNode, *LinkList; //LNode* 表示结点、 LinkList表示单链表
 
 // 算法2.6 单链表的初始化
+Status InitList(LinkList* L) {  // 传入的参数是<指针变量L>的地址，指针变量表示的是结点的地址
+    (*L) = (LinkList)malloc(sizeof(LNode));
+    (*L)->next = NULL;
+}
+
 
 
 int main() {
