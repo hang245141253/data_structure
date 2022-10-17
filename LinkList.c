@@ -57,42 +57,86 @@ LNode* LocateElem(LinkList L, ElemType e) {
 
 // 算法2.9 单链表的插入
 Status ListInsert(LinkList* L, int i, ElemType e) {
-    LNode* p = *L;              // p指向头结点
-    int j = 0;                  // 当前p指向的是第几个结点(第0个结点是头结点)
+    LNode* p = *L;            // p指向头结点
+    int j = 0;                // 当前p指向的是第几个结点(第0个结点是头结点)
     while (p && j < i - 1) {  // 循环找到第i-1个结点
         p = p->next;
         ++j;
-    } // 循环域为[2, n] p==NULL时位置在n+1处不合法退出循环
+    }  // 循环域为[2, n] p==NULL时位置在n+1处不合法退出循环
     if (!p || j > i - 1) {
         return ERROR;
-    } // 可合法插入的位置有n+1个,即i∈[1, n+1]
-    LNode* s = (LNode*)malloc(sizeof(LNode));   // 生成新结点*s
-    s->data = e;            // 将结点*s的数据域置为e
-    s->next = p->next;      // 将结点*s的指针域指向结点a(i)
-    p->next = s;            // 将结点*p的指针域指向结点*s
+    }                                          // 可合法插入的位置有n+1个,即i∈[1, n+1]
+    LNode* s = (LNode*)malloc(sizeof(LNode));  // 生成新结点*s
+    s->data = e;                               // 将结点*s的数据域置为e
+    s->next = p->next;                         // 将结点*s的指针域指向结点a(i)
+    p->next = s;                               // 将结点*p的指针域指向结点*s
     return OK;
 }
 
 // 算法2.10 单链表的删除
 Status ListDelete(LinkList* L, int i) {
-    LNode* p = *L;              // p指向头结点
-    int j = 0;                  // 当前p指向的是第几个结点(第0个结点是头结点)
-    while (p->next && j < i - 1) { // p->next==NULL时,说明p位置在末尾n处
+    LNode* p = *L;                  // p指向头结点
+    int j = 0;                      // 当前p指向的是第几个结点(第0个结点是头结点)
+    while (p->next && j < i - 1) {  // p->next==NULL时,说明p位置在末尾n处
         p = p->next;
         ++j;
-    } // 循环域为[2, n—1] p->next==NULL时位置在n处不合法退出循环
+    }  // 循环域为[2, n—1] p->next==NULL时位置在n处不合法退出循环
     if (!(p->next) || j > i - 1) {
         return ERROR;
-    } // 可合法插入的位置有n个,即i∈[1, n]
-    LNode* q = p->next;     // 结点q临时保存被删除结点的地址以备free
-    p->next = q->next;      // 删除结点的前驱 -> 删除结点的后继
-    free(q);                // 释放删除结点
+    }                    // 可合法插入的位置有n个,即i∈[1, n]
+    LNode* q = p->next;  // 结点q临时保存被删除结点的地址以备free
+    p->next = q->next;   // 删除结点的前驱 -> 删除结点的后继
+    free(q);             // 释放删除结点
     return OK;
+}
+
+// 算法2.11 头插法创建单链表
+void CreatList_H(LinkList* L, int n) {
+    InitList(L);
+    for (int i = 0; i < n; i++) {
+        LNode* p = (LNode*)malloc(sizeof(LNode));  // 生成新结点*p
+        scanf("%d", &p->data);                     // 输入元素至新结点*p的数据域
+        p->next = (*L)->next;
+        (*L)->next = p;  // 将新结点*p插入到头结点之后
+    }
+}
+
+// 算法2.12 尾插法创建单链表
+void CreatList_R(LinkList* L, int n) {
+    InitList(L);
+    LNode* r = (*L);
+    for (int i = 0; i < n; i++) {
+        LNode* p = (LNode*)malloc(sizeof(LNode));
+        scanf("%d", &p->data);
+        p->next = NULL;
+        r->next = p;
+        r = p;
+    }
+}
+
+// 遍历单链表 & 求表长
+void PrintList(LinkList L) {
+    int i = 0;
+    if (L->next == NULL) {
+        printf("单链表L为空表\n");
+        printf("test1表长为%d\n", i);
+        return ;
+    }
+    LNode* p = L->next; // p指向首元结点
+    while (p) {
+        printf("%d ", p->data);
+        p = p->next;
+        i++;
+    }
+    printf("表长为%d\n", i);
 }
 
 int main() {
     LinkList L;  // 头指针
-    InitList(&L);
-    printf("%ld\n", sizeof(LNode));
+    // InitList(&L);
+    // PrintList(L);
+    CreatList_R(&L, 3);
+    PrintList(L);
+    // printf("%ld\n", sizeof(LNode));
     return 0;
 }
