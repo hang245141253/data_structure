@@ -105,11 +105,11 @@ void CreatList_H(LinkList* L, int n) {
 void CreatList_R(LinkList* L, int n) {
     InitList(L);
     LNode* r = (*L);
-    for (int i = 1; i <= n; i++) {
+    for (int i = 0; i < n; i++) {
         LNode* p = (LNode*)malloc(sizeof(LNode));
         scanf("%d", &p->data);
         // p->data = i;
-        p->next = NULL;
+        p->next = r->next;
         r->next = p;
         r = p;
     }
@@ -120,7 +120,7 @@ void PrintList(LinkList L) {
     int i = 0;
     if (L->next == NULL) {
         printf("单链表L为空表\n");
-        printf("test1表长为%d\n", i);
+        printf("表长为%d\n", i);
         return;
     }
     LNode* p = L->next;  // p指向首元结点
@@ -137,7 +137,6 @@ LNode* reverseList(LinkList head) {
     if (head == NULL) return head;
     LinkList L = (LNode*)malloc(sizeof(LNode));  // p->首元结点
     L->next = NULL;
-
     LNode* p = head->next;
     while (p) {
         LNode* temp = (LNode*)malloc(sizeof(LNode));
@@ -147,7 +146,6 @@ LNode* reverseList(LinkList head) {
 
         p = p->next;
     }
-
     return L;
 }
 
