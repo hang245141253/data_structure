@@ -42,17 +42,17 @@ Status GetElem(LinkList L, int i, ElemType* e) {
     if (!p || j > i) {  // i>n(p为空) 或 i<=0:i值不合法
         return ERROR;
     }
-    *e = p->data;
+    (*e) = p->data;
     return OK;
 }
 
-// 算法2.8 单链表的查找
+// 算法2.8 单链表的按值查找
 LNode* LocateElem(LinkList L, ElemType e) {
     LNode* p = L->next;          // p指向首元结点
     while (p && p->data != e) {  // 顺链域向后扫描，直到p为空 或 p所指结点的data为e时退出
         p = p->next;
     }
-    return p;  // 查找成功返回值为e的结点地址怕，查找失败p为NULL
+    return p;  // 查找成功返回值为e的结点地址p，查找失败p为NULL
 }
 
 // 算法2.9 单链表的插入
@@ -105,9 +105,10 @@ void CreatList_H(LinkList* L, int n) {
 void CreatList_R(LinkList* L, int n) {
     InitList(L);
     LNode* r = (*L);
-    for (int i = 0; i < n; i++) {
+    for (int i = 1; i <= n; i++) {
         LNode* p = (LNode*)malloc(sizeof(LNode));
         scanf("%d", &p->data);
+        // p->data = i;
         p->next = NULL;
         r->next = p;
         r = p;
@@ -120,25 +121,62 @@ void PrintList(LinkList L) {
     if (L->next == NULL) {
         printf("单链表L为空表\n");
         printf("test1表长为%d\n", i);
-        return ;
+        return;
     }
-    LNode* p = L->next; // p指向首元结点
+    LNode* p = L->next;  // p指向首元结点
     while (p) {
-        printf("%d ", p->data);
+        printf(GREEN("%d "), p->data);
         p = p->next;
         i++;
     }
     printf("表长为%d\n", i);
 }
 
+// 链表反转
+LNode* reverseList(LinkList head) {
+    if (head == NULL) return head;
+    LinkList L = (LNode*)malloc(sizeof(LNode));  // p->首元结点
+    L->next = NULL;
+
+    LNode* p = head->next;
+    while (p) {
+        LNode* temp = (LNode*)malloc(sizeof(LNode));
+        temp->data = p->data;
+        temp->next = L->next;
+        L->next = temp;
+
+        p = p->next;
+    }
+
+    return L;
+}
+
 int main() {
     LinkList L;  // 头指针
-    // InitList(&L);
+    // CreatList_H(&L, 3);
     // PrintList(L);
-    CreatList_H(&L, 3);
-    PrintList(L);
     CreatList_R(&L, 3);
     PrintList(L);
+
+    // 取值 & 查找
+    int e;
+    GetElem(L, 2, &e);
+    printf("取位序2的值赋值给e, e=%d\n", e);
+
+    // 插入
+    ListInsert(&L, 4, 666);  // 尾插元素666
+    PrintList(L);
+
+    // 删除
+    ListDelete(&L, 1);
+    PrintList(L);
+
+    // 按值查找
+    printf("值为%d的结点地址是%p\n", LocateElem(L, 666)->data, LocateElem(L, 666));
+
+    // 链表反转
+    PrintList(reverseList(L));
+
     // printf("%ld\n", sizeof(LNode));
     return 0;
 }
