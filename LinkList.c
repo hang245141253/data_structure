@@ -135,6 +135,8 @@ int main() {
     LinkList L;  // 头指针
     // InitList(&L);
     // PrintList(L);
+    CreatList_H(&L, 3);
+    PrintList(L);
     CreatList_R(&L, 3);
     PrintList(L);
     // printf("%ld\n", sizeof(LNode));
