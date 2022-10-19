@@ -122,12 +122,13 @@ void DestoryDuList(DuLinkList* L) {
         ListDelete_DuL(L, 1);
     }
     free(*L);
+    L = NULL;
     printf("销毁链表L\n");
     return ;
 }
 
 int main() {
-    DuLinkList L;
+    DuLinkList L = NULL;
     CreatDuList_R(&L, 5);
     ListInsert_DuL(&L, 1, 666);
     ListDelete_DuL(&L, 1);

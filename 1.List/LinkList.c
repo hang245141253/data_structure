@@ -150,7 +150,7 @@ LNode* reverseList(LinkList head) {
 }
 
 int main() {
-    LinkList L;  // 头指针
+    LinkList L = NULL;  // 头指针
     // CreatList_H(&L, 3);
     // PrintList(L);
     CreatList_R(&L, 3);
