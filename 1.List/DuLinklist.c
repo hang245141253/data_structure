@@ -66,6 +66,7 @@ Status ListInsert_DuL(DuLinkList* L, int i, ElemType e) {
     // p->prior->next = s;  // 前面结点连接新结点s
     // s->next = p;         // 新结点s连接后面
     // p->prior = s;        // 后面结点连接s结点
+    printf("在位置%d插入元素%d\n", i, e);
     return OK;
 }
 
@@ -76,7 +77,7 @@ Status ListDelete_DuL(DuLinkList* L, int i) {
         printf("删除失败ERROR!\n");
         return ERROR;
     }
-    printf("被删除的元素值为%d\n", p->data);
+    printf("删除位置%d的元素,被删除的元素值为%d\n", i, p->data);
     p->prior->next = p->next;                          // 图2.21的①
     (p->next != NULL) && (p->next->prior = p->prior);  // 图2.21的②
     free(p);
@@ -90,7 +91,7 @@ void CreatDuList_R(DuLinkList* L, int n) {
     for (int i = 0; i < n; i++) {
         DuLNode* p = (DuLNode*)malloc(sizeof(DuLNode));
         // scanf("%d", &p->data);
-        p->data = i + 1;
+        p->data = i + 1;    // 输入元素
         p->next = r->next;
         p->prior = r;
         r->next = p;
@@ -103,7 +104,7 @@ void PrintList(DuLinkList L) {
     int i = 0;
     if (L->next == NULL) {
         printf("双向链表L为空表\n");
-        printf("表长为%d\n", i);
+        printf(GREEN("表长为%d\n"), i);
         return;
     }
     DuLNode* p = L->next;  // p指向首元结点
@@ -112,7 +113,17 @@ void PrintList(DuLinkList L) {
         p = p->next;
         i++;
     }
-    printf("表长为%d\n", i);
+    printf(GREEN("表长为%d\n"), i);
+}
+
+void DestoryDuList(DuLinkList* L) {
+    // 从首元结点销毁,直至为空表时free(L)
+    while ((*L)->next) {
+        ListDelete_DuL(L, 1);
+    }
+    free(*L);
+    printf("销毁链表L\n");
+    return ;
 }
 
 int main() {
@@ -121,6 +132,7 @@ int main() {
     ListInsert_DuL(&L, 1, 666);
     ListDelete_DuL(&L, 1);
     PrintList(L);
-
+    DestoryDuList(&L);
+    PrintList(L);
     return 0;
 }
