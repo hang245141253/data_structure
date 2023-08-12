@@ -9,7 +9,7 @@ typedef struct Vector {
     int size, len;
 } Vec;
 
-Vec *init(int s) {
+Vec* init(int s) {
     Vec *v = (Vec *)malloc(sizeof(Vec));
     v->data = (int *)malloc(sizeof(int) * s);
     v->size = s;
