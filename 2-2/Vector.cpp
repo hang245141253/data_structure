@@ -24,7 +24,6 @@ using namespace std;
 
 typedef int ElemType;  // 数据元素类型约定为ElemType, 由用户在使用该数据类型时自行定义
 
-
 /****************************** 结构定义 ************************************/
 struct Vector {
     ElemType* data;
@@ -67,7 +66,7 @@ int expand(Vector& vec) {
 
 // 尾部插入元素，考虑会有插入失败的可能返回false
 bool push_back(Vector& vec, ElemType val) {
-    // 如果未初始化 vec.data == NULL
+    // 如果未初始化 vec.data == nullptr
     if (vec.data == nullptr)
         return false;
 
@@ -75,13 +74,13 @@ bool push_back(Vector& vec, ElemType val) {
     if (vec.size >= vec.capacity) {
         if (expand(vec) == -1)
             return false;
-        printf("expand successfully ! capacity = %d\n", vec.capacity);
+        // printf("expand successfully ! capacity = %d\n", vec.capacity);
     }
 
     // 在尾部直接插入
     vec.data[vec.size] = val;
     vec.size++;
-    
+
     return true;
 }
 
@@ -95,7 +94,7 @@ bool insert(Vector& vec, int idx, ElemType val) {
     if (vec.size == vec.capacity) {
         if (expand(vec) == -1)
             return false;
-        printf("expand successfully ! capacity = %d\n", vec.capacity);
+        // printf("expand successfully ! capacity = %d\n", vec.capacity);
     }
 
     // (从后向前遍历)为新元素腾出位置
@@ -127,7 +126,16 @@ bool erase(Vector& vec, int idx) {
     return true;
 }
 
-int main() {
+void clear(Vector& vec) {  // 销毁操作
+    if (vec.data == nullptr)
+        return;
+    delete[] vec.data;
+    vec.data = nullptr;
+    vec.capacity = 0;
+    vec.size = 0;
+}
+
+int main_test() {
     Vector vec;
     init(vec);
 
@@ -154,10 +162,11 @@ int main() {
         printf("data[%d] = %d\n", i, vec.data[i]);
     }
 
-    delete[] vec.data; // new的堆区内存需要手动回收，否则会造成内存泄漏
+    // 需要手动回收，否则会造成内存泄漏
+    clear(vec);
+    printf("data = %p, capacity = %d, size = %d\n", vec.data, vec.capacity, vec.size);
 
     return 0;
-
 
     /****************************** vector_STL ************************************/
 
@@ -191,5 +200,29 @@ int main() {
     //     cout << *it << " ";
     // }
 
+    return 0;
+}
+
+// https://oj.stemstar.com/problems/287
+int main() {
+    Vector vec[10005];
+    int n, m, x, y;
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; i++) {
+        init(vec[i]);
+    }
+
+    for (int i = 0; i < m; i++) {
+        cin >> x >> y;
+        push_back(vec[x], y);
+    }
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 0; j < vec[i].size; j++) {
+            j && printf(" ");
+            printf("%d", vec[i].data[j]);
+        } printf("\n");
+    }
     return 0;
 }
