@@ -86,6 +86,10 @@ bool push_back(Vector& vec, ElemType val) {
 
 // 插入元素
 bool insert(Vector& vec, int idx, ElemType val) {
+    // 如果未初始化 vec.data == nullptr
+    if (vec.data == nullptr)
+        return false;
+
     // 检查位置是否有效
     if (idx < 0 || idx > vec.size)
         return false;
@@ -111,6 +115,10 @@ bool insert(Vector& vec, int idx, ElemType val) {
 
 // 删除指定位置的元素
 bool erase(Vector& vec, int idx) {
+    // 如果未初始化 vec.data == nullptr
+    if (vec.data == nullptr)
+        return false;
+        
     // 检查位置是否有效
     if (idx < 0 || idx >= vec.size)
         return false;
