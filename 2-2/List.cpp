@@ -14,13 +14,13 @@ typedef int ElemType;  // 数据元素类型约定为ElemType, 由用户在使�
 
 /****************************** 结构定义 ************************************/
 
-// 链表结点结构体
+// 结点，只有后继，是单向链表
 struct ListNode {
     ElemType data;
     struct ListNode* next;
 };
 
-// 链表结构体
+// 链表
 struct List {
     struct ListNode* head;
     struct ListNode* tail;
@@ -28,7 +28,7 @@ struct List {
 };
 
 // 初始化链表
-void initializeList(List& list) {
+void initList(List& list) {
     list.head = list.tail = NULL;
     list.size = 0;
 }
@@ -66,7 +66,7 @@ void pushFront(List& list, int value) {
 void pushBack(List& list, int value) {
     ListNode* newNode = createNode(value);
 
-    if (list.tail == nullptr) {
+    if (list.tail == nullptr) {  // 如果链表为空，那么这个结点既是头部也是尾部
         list.head = list.tail = newNode;
     } else {
         list.tail->next = newNode;
@@ -74,6 +74,37 @@ void pushBack(List& list, int value) {
     }
 
     list.size++;
+}
+
+// 插入元素到指定位置
+/*
+size_t 是 C/C++ 中的一种无符号整数类型，
+通常用于表示对象的大小或容器的大小。
+它是根据系统架构的不同而有所变化，但它总是足够大以容纳系统中最大可能的对象大小。
+*/
+void insert(List& list, size_t position, int value) {
+    if (position > list.size) {
+        std::cerr << "Invalid position for insertion" << std::endl;
+        return;
+    }
+
+    if (position == 0) {
+        pushFront(list, value);
+    } else if (position == list.size) {
+        pushBack(list, value);
+    } else {
+        ListNode* newNode = createNode(value);
+        ListNode* current = list.head;
+
+        for (size_t i = 1; i < position; ++i) {
+            current = current->next;
+        }
+
+        newNode->next = current->next;
+        current->next = newNode;
+
+        list.size++;
+    }
 }
 
 // 删除链表头部元素
@@ -115,6 +146,33 @@ void popBack(List& list) {
     }
 }
 
+// 删除链表中特定位置的节点
+void erase(List& list, size_t position) {
+    if (position >= list.size) {
+        std::cerr << "Invalid position for erasing" << std::endl;
+        return;
+    }
+
+    if (position == 0) {
+        popFront(list);
+    } else if (position == list.size - 1) {
+        popBack(list);
+    } else {
+        ListNode* current = list.head;
+        ListNode* prev = nullptr;
+
+        for (size_t i = 0; i < position; ++i) {
+            prev = current;
+            current = current->next;
+        }
+
+        prev->next = current->next;
+        delete current;
+
+        list.size--;
+    }
+}
+
 // 打印链表元素
 void printList(const List& list) {
     const ListNode* current = list.head;
@@ -149,17 +207,24 @@ void destroyList(List& list) {
 
 int main() {
     List myList;
-    initializeList(myList);
+    initList(myList);
 
     pushBack(myList, 1);
     pushBack(myList, 2);
     pushFront(myList, 0);
+
+    insert(myList, 2, 5);    // 在位置2插入元素5
+    insert(myList, 2, 6);    // 在位置2插入元素5
+    insert(myList, 2, 7);    // 在位置2插入元素5
+    insert(myList, 999, 8);  // 在位置999插入元素5
 
     std::cout << "List size: " << getSize(myList) << std::endl;
     printList(myList);
 
     popFront(myList);
     popBack(myList);
+    erase(myList, 3);    // 删除位置3的元素
+    erase(myList, 999);  // 删除位置999的元素
 
     std::cout << "List size: " << getSize(myList) << std::endl;
     printList(myList);
