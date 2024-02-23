@@ -38,7 +38,7 @@ ListNode* createNode(int value) {
     ListNode* newNode = new ListNode;
     if (newNode == nullptr) {
         // 处理内存分配失败的情况
-        std::cerr << "Memory allocation failed" << std::endl;
+        cerr << "Memory allocation failed" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -84,7 +84,7 @@ size_t 是 C/C++ 中的一种无符号整数类型，
 */
 void insert(List& list, size_t position, int value) {
     if (position > list.size) {
-        std::cerr << "Invalid position for insertion" << std::endl;
+        cerr << "Invalid position for insertion" << endl;
         return;
     }
 
@@ -95,7 +95,8 @@ void insert(List& list, size_t position, int value) {
     } else {
         ListNode* newNode = createNode(value);
         ListNode* current = list.head;
-
+        
+        // 遍历n - 1次, 到要插入位置前一个结点处
         for (size_t i = 1; i < position; ++i) {
             current = current->next;
         }
@@ -128,6 +129,7 @@ void popBack(List& list) {
         ListNode* temp = list.head;
         ListNode* prev = nullptr;
 
+        // 单项链表只能从头找删除的前一个位置
         while (temp->next != nullptr) {
             prev = temp;
             temp = temp->next;
@@ -149,7 +151,7 @@ void popBack(List& list) {
 // 删除链表中特定位置的节点
 void erase(List& list, size_t position) {
     if (position >= list.size) {
-        std::cerr << "Invalid position for erasing" << std::endl;
+        cerr << "Invalid position for erasing" << endl;
         return;
     }
 
@@ -158,9 +160,10 @@ void erase(List& list, size_t position) {
     } else if (position == list.size - 1) {
         popBack(list);
     } else {
-        ListNode* current = list.head;
-        ListNode* prev = nullptr;
+        ListNode* current = list.head;  // 头结点的位置是0
+        ListNode* prev = nullptr;       // 当前位置的前一个结点
 
+        // 遍历n次, 到要删除位置结点处
         for (size_t i = 0; i < position; ++i) {
             prev = current;
             current = current->next;
@@ -177,10 +180,10 @@ void erase(List& list, size_t position) {
 void printList(const List& list) {
     const ListNode* current = list.head;
     while (current != nullptr) {
-        std::cout << current->data << " ";
+        cout << current->data << " ";
         current = current->next;
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
 // 判断链表是否为空
@@ -197,6 +200,7 @@ size_t getSize(const List& list) {
 void clearList(List& list) {
     while (list.head != nullptr) {
         popFront(list);
+        // 如果用popBack效率会变慢
     }
 }
 
@@ -218,7 +222,7 @@ int main() {
     insert(myList, 2, 7);    // 在位置2插入元素5
     insert(myList, 999, 8);  // 在位置999插入元素5
 
-    std::cout << "List size: " << getSize(myList) << std::endl;
+    cout << "List size: " << getSize(myList) << endl;
     printList(myList);
 
     popFront(myList);
@@ -226,12 +230,12 @@ int main() {
     erase(myList, 3);    // 删除位置3的元素
     erase(myList, 999);  // 删除位置999的元素
 
-    std::cout << "List size: " << getSize(myList) << std::endl;
+    cout << "List size: " << getSize(myList) << endl;
     printList(myList);
 
     clearList(myList);
 
-    std::cout << "List size: " << getSize(myList) << std::endl;
+    cout << "List size: " << getSize(myList) << endl;
 
     destroyList(myList);
 
