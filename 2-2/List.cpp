@@ -176,6 +176,19 @@ void erase(List& list, size_t position) {
     }
 }
 
+ListNode* findElem(List& list, ElemType value) {
+    ListNode* current = list.head;
+
+    while (current != nullptr) {
+        if (current->data == value) {
+            return current;  // 返回找到的节点的指针
+        }
+        current = current->next;
+    }
+
+    return nullptr;  // 未找到时返回nullptr
+}
+
 // 打印链表元素
 void printList(const List& list) {
     const ListNode* current = list.head;
@@ -221,6 +234,7 @@ int main() {
     insert(myList, 2, 6);    // 在位置2插入元素5
     insert(myList, 2, 7);    // 在位置2插入元素5
     insert(myList, 999, 8);  // 在位置999插入元素5
+    cout << "find next ******" << findElem(myList, 5)->next->data << "*****" << endl;
 
     cout << "List size: " << getSize(myList) << endl;
     printList(myList);
