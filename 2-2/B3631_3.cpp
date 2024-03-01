@@ -67,7 +67,9 @@ void find(SList& L, int x) {
     // if (cur == -1)  return;
 
     // cout << (L.nodes[cur].next == -1 ? 0 : L.nodes[L.nodes[cur].next].data) << endl;
-    cout << (L.nodes[mmap[x]].next == -1 ? 0 : L.nodes[L.nodes[mmap[x]].next].data) << endl;
+    int idx = mmap[x];
+    auto nxt = L.nodes[idx].next;
+    cout << (nxt == -1 ? 0 : L.nodes[nxt].data) << endl;
 }
 
 // 删除 x 后面的元素
