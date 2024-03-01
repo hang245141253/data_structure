@@ -58,16 +58,16 @@ void insert(SList& L, int x, int y) {
 
 // 询问 x 后面的元素是什么。如果 x 是最后一个元素，则输出0
 void find(SList& L, int x) {
-    int cur = L.head;
-    while (cur != -1) {
-        if (L.nodes[cur].data == x) break;
-        cur = L.nodes[cur].next;
-    }
+    // int cur = L.head;
+    // while (cur != -1) {
+    //     if (L.nodes[cur].data == x) break;
+    //     cur = L.nodes[cur].next;
+    // }
 
-    if (cur == -1)  return;
+    // if (cur == -1)  return;
 
-    cout << (L.nodes[cur].next == -1 ? 0 : L.nodes[L.nodes[cur].next].data) << endl;
-    // (L.nodes[L.nodes[mmap[x]].next].next == -1 ? 0 : L.nodes[L.nodes[mmap[x]].next].data) << endl;
+    // cout << (L.nodes[cur].next == -1 ? 0 : L.nodes[L.nodes[cur].next].data) << endl;
+    cout << (L.nodes[mmap[x]].next == -1 ? 0 : L.nodes[L.nodes[mmap[x]].next].data) << endl;
 }
 
 // 删除 x 后面的元素
