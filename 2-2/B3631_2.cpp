@@ -186,13 +186,31 @@ int main() {
     List L;
     init(L);
     pushBack(L, 1);
-    // 将元素 y 插入到 x 后面, 所以+1
-    insert(L, findElemPos(L, 1) + 1, 99);
-    insert(L, findElemPos(L, 99) + 1, 50);
-    insert(L, findElemPos(L, 99) + 1, 75);
-    cout << findElemNext(L, 99) << endl;
-    erase(L, findElemPos(L, 75) + 1);
-    cout << findElemNext(L, 1) << endl;
+
+    int q;
+    cin >> q;
+    while (q--) {
+        int op, x, y;
+        cin >> op;
+        if (op == 1) {
+            cin >> x >> y;
+            insert(L, findElemPos(L, x) + 1, y);
+        } else if (op == 2) {
+            cin >> x;
+            cout << findElemNext(L, x) << endl;
+        } else if (op == 3) {
+            cin >> x;
+            erase(L, findElemPos(L, x) + 1);
+        }
+    }
+
+    // // 将元素 y 插入到 x 后面, 所以+1
+    // insert(L, findElemPos(L, 1) + 1, 99);
+    // insert(L, findElemPos(L, 99) + 1, 50);
+    // insert(L, findElemPos(L, 99) + 1, 75);
+    // cout << findElemNext(L, 99) << endl;
+    // erase(L, findElemPos(L, 75) + 1);
+    // cout << findElemNext(L, 1) << endl;
 
     // printList(L);
 
