@@ -23,11 +23,11 @@ int main() {
         cur->next = p;
         cur = cur->next; // 或者 cur = p
     }
-
+    cur->next = head; // 建立循环链表   
     // debug遍历
     for (Node* i = head; i != nullptr; i = i->next) {
         cout << i->data << " ";
-    }
+     }
 
     cur = head;
 
