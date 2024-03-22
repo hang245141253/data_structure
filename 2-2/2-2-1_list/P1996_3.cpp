@@ -13,7 +13,6 @@ int n, m;
 int main() {
     cin >> n >> m;
 
-
     // 建立链表
     nodes[0].next = 1; // 0号位置是头结点, 指向位置1表示可用位置
     for (int i = 1; i <= n; i++) {
