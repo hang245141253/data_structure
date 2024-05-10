@@ -453,4 +453,100 @@ public:
 
 ## 二叉树经典题-二叉树的基本操作
 
+**leetcode 144-二叉树的前序遍历**
+
+```C++
+class Solution {
+public:
+    void pre_order(TreeNode* root, vector<int> &ans) {
+        if (root == nullptr) return;
+        ans.push_back(root->val);
+        pre_order(root->left, ans);
+        pre_order(root->right, ans);
+    }
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        pre_order(root, ans);
+        return ans;
+    }
+};
+```
+
+**leetcode 589- N 叉树的前序遍历**
+
+![alt text](image-19.png)
+
+    vector<Node*> children;是给结点的边定义成了一个动态数组。
+
+    前序遍历则先根，然后遍历边的数组即可。
+
+```C++
+class Solution {
+public:
+    void pre_order(Node* root, vector<int> &ans) {
+        if (root == nullptr) return;
+        ans.push_back(root->val);
+        for (auto it = root->children.begin(); it != root->children.end(); it++) {
+            pre_order(*it, ans);
+        }
+        // for (auto x : root->children) {
+        //     pre_order(x, ans);
+        // }
+    }
+    vector<int> preorder(Node* root) {
+        vector<int> ans;
+        pre_order(root, ans);
+        return ans;
+    }
+};
+```
+
+**leetcode 226-翻转二叉树**
+
+    1.先交换当前结点的左右两个子树
+    2.再进行左子树的反转和右子树的反转
+
+![alt text](image-20.png)
+
+```C++
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (root == nullptr) return root;
+        swap(root->left, root->right);
+        invertTree(root->left);
+        invertTree(root->right);
+        return root;
+    }
+};
+```
+
+**leetcode 102. 二叉树的层序遍历**
+
+![alt text](image-21.png)
+
+    用dfs做，设置一个变量k表示当前在第几层，
+
+    每一层用vector存，来新的元素push_back即可
+
+```C++
+class Solution {
+public:
+    // root是树，k是第几个数组，ans存结果
+    void getResult (TreeNode* root, int k, vector<vector<int>> &ans) {
+        if (root == nullptr) return;
+        if (k == ans.size()) ans.push_back(vector<int>());
+        ans[k].push_back(root->val);
+        getResult(root->left, k + 1, ans);
+        getResult(root->right, k + 1, ans);
+    }
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        getResult(root, 0, ans);
+        return ans;
+    }
+};
+```
+
+**leetcode 107. 二叉树的层序遍历II**
 
