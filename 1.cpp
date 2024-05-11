@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 struct TreeNode {
@@ -14,30 +15,19 @@ struct TreeNode {
 
 class Solution {
 public:
-    vector<vector<int>> levelOrderBottom(TreeNode *root) {
+    void getResult(TreeNode* root, int k, vector<vector<int>> &ans) {
+        if (root == nullptr) return;
+        if (k == ans.size()) ans.push_back(vector<int>());
+        ans[k].push_back(root->val);
+        getResult(root->left, k + 1, ans);
+        getResult(root->right, k + 1, ans);
+    }
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
         vector<vector<int>> ans;
-        if (root == nullptr)
-            return ans;
-
-        queue<TreeNode *> que;
-        que.push(root);
-        int k = 0;
-        while (!que.empty()) {
-            ans.push_back(vector<int>());
-            for (int i = que.size(); i > 0; i--) {
-                TreeNode *tmp = que.front();
-                que.pop();
-                if (tmp->left)    que.push(tmp->left);
-                if (tmp->right)   que.push(tmp->right);
-                ans[k].push_back(tmp->val);
-            }
-            k++;
+        getResult(root, 0, ans);
+        for (int i = 1; i < ans.size(); i += 2) {
+            reverse(ans[i].begin(), ans[i].end());
         }
-
-        for (int i = 0, j = ans.size() - 1; i < j; i++, j--) {
-            swap(ans[i], ans[j]);
-        }
-
         return ans;
     }
 };

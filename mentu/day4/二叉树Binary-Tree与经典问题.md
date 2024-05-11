@@ -523,11 +523,47 @@ public:
 
 **leetcode 102. 二叉树的层序遍历**
 
+    层序遍历，本题用BFS做。
+    
+
+```C++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        if (root == nullptr)    return ans;
+        
+        queue<TreeNode *> que;
+        que.push(root);
+        int k = 0;
+        while (!que.empty()) {
+            ans.push_back(vector<int>());
+            for (int i = que.size(); i > 0; i--) {
+                TreeNode *tmp = que.front();
+                que.pop();
+                if (tmp->left)    que.push(tmp->left);
+                if (tmp->right)   que.push(tmp->right);
+                ans[k].push_back(tmp->val);
+            }
+            k++;
+        }
+        return ans;
+    }
+};
+```
+
+**leetcode 107. 二叉树的层序遍历II**
+
+    与上一题的区别是本题是自底向上，在上一题的思路之上双指针交换即可。
+
+    思考如何用dfs做？
+
 ![alt text](image-21.png)
 
     用dfs做，设置一个变量k表示当前在第几层，
 
     每一层用vector存，来新的元素push_back即可
+
 
 ```C++
 class Solution {
@@ -540,13 +576,50 @@ public:
         getResult(root->left, k + 1, ans);
         getResult(root->right, k + 1, ans);
     }
-    vector<vector<int>> levelOrder(TreeNode* root) {
+
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
         vector<vector<int>> ans;
         getResult(root, 0, ans);
+        for (int i = 0, j = ans.size() - 1; i < j; i++, j--) {
+            swap(ans[i], ans[j]);
+        }
         return ans;
     }
 };
 ```
 
-**leetcode 107. 二叉树的层序遍历II**
+
+**leetcode 103. 二叉树的锯齿形层序遍历**
+
+    奇数行正常遍历、偶数行逆序遍历。
+
+    1.先正常遍历结果
+    2.然后把偶数行reverse
+
+![alt text](image-22.png)
+
+```C++
+class Solution {
+public:
+    void getResult(TreeNode* root, int k, vector<vector<int>> &ans) {
+        if (root == nullptr) return;
+        if (k == ans.size()) ans.push_back(vector<int>());
+        ans[k].push_back(root->val);
+        getResult(root->left, k + 1, ans);
+        getResult(root->right, k + 1, ans);
+    }
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        getResult(root, 0, ans);
+        for (int i = 1; i < ans.size(); i += 2) {
+            reverse(ans[i].begin(), ans[i].end());
+        }
+        return ans;
+    }
+};
+```
+
+**以上题目为基础操作题**
+
+## 二叉树经典题-
 
