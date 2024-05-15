@@ -621,5 +621,289 @@ public:
 
 **以上题目为基础操作题**
 
-## 二叉树经典题-
+## 二叉树经典题-二叉树的进阶操作
 
+
+**leetcode 110. 平衡二叉排序树**
+
+    平衡：每个节点的左子树和右子树的高度差不超过 1（这种限制确保了树的高度近似为 log(n)，其中 n 是树中节点的数量，这使得在平衡二叉树中进行插入、删除和搜索等操作的时间复杂度保持较低水平。）
+
+通过一次递归遍历的做法：
+
+    1.先写一个getHeight递归函数判断当前树高
+
+```C++
+int getHeight(TreeNode *root) {
+    if (root == nullptr) return 0;
+    int l = getHeight(root->left);
+    int r = getHeight(root->right);
+    return max(l, r) + 1;
+}    
+```
+
+    2.基于这个方法，改写成判断树是否平衡
+        让这个函数同时做两件事情：
+            判断树高
+            当树不平衡的时候返回一个负值
+```C++
+int getHeight(TreeNode *root) {
+    if (root == nullptr) return 0;
+    int l = getHeight(root->left);
+    int r = getHeight(root->right);
+
+    // 当树不平衡的时候返回一个负值
+    if (l < 0 || r < 0) return -1; // 判断左右子树是否平衡
+    if (abs(l - r) > 1) return -1; // 如果都平衡判断左右树高是否符合平衡条件
+
+    return max(l, r) + 1;
+}    
+```
+    3.如果getHeight(root)>=0，则为平衡二叉树。
+
+```C++
+class Solution {
+public:
+    int getHeight(TreeNode *root) {
+        if (root == nullptr) return 0;
+        int l = getHeight(root->left);
+        int r = getHeight(root->right);
+        if (l < 0 || r < 0) return -1;
+        if (abs(l - r) > 1) return -1;
+        return max(l, r) + 1;
+    }
+    bool isBalanced(TreeNode* root) {
+        return getHeight(root) >= 0;
+    }
+};
+```
+本题技巧是设计递归函数的功能，不平衡返回负数。
+
+**leetcode 112. 路径总和**
+
+    题目大意：从根节点走到叶子结点是否有一条路径，使得路径上的结点之和等于targetSum
+
+垃圾code：
+```C++
+class Solution {
+public:
+    void sum(TreeNode *root, int &s, const int &targetSum, bool &ans) {
+        if (ans)     return;
+        s += root->val;
+        if (root->left == nullptr && root->right == nullptr && s == targetSum) {
+            ans = 1;
+            return;
+        }
+        if (root->left) sum(root->left, s, targetSum, ans);
+        if (root->right) sum(root->right, s, targetSum, ans);
+        s -= root->val;
+    }
+
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if (root == nullptr) return 0;
+        int s = 0;
+        bool ans = 0;
+        sum(root, s, targetSum, ans);
+        return ans;
+    }
+};
+```
+优化：
+```C++
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if (root == nullptr) return false;
+        if (!root->left && !root->right) return root->val == targetSum;
+        if (root->left && hasPathSum(root->left, targetSum - root->val)) return true;
+        if (root->right && hasPathSum(root->right, targetSum - root->val)) return true;
+        return false;
+    }
+};
+```
+总结：
+
+    if (!root->left && !root->right) return root->val == targetSum;
+    是用于判断是否走到了叶子结点，如果走到叶子结点根据路径和是否满足targetSum的结果作为返回值，这个用来控制：
+
+    if (root->left && hasPathSum(root->left, targetSum - root->val)) 
+    if (root->right && hasPathSum(root->right, targetSum - root->val)) 
+
+    这两个if只有找到了符合题意的路径才会return true
+
+    return true和return false才是真正返回这个函数答案的地方。
+
+**leetcode 105. 从前序与中序遍历序列构造二叉树**
+
+    构造的过程肯定是递归的，
+        先从前序中找到root，然后在中序中找到这个值，切分好左右子树
+        然后两次递归恢复树，把树挂在root上
+
+        1.找root
+        2.递归建立左子树
+        3.递归建立右子树  
+
+
+![alt text](image-23.png)
+
+```C++
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (preorder.size() == 0) return nullptr;
+        int pos = 0; // 找根节点位置
+        while (preorder[0] != inorder[pos]) pos++;
+        // 从preorder和inorder中分割左右子树
+        vector<int> l_pre, l_in, r_pre, r_in;
+        for (int i = 0; i < pos; i++) {
+            l_pre.push_back(preorder[i + 1]);
+            l_in.push_back(inorder[i]);
+        }
+        for (int i = pos + 1; i < preorder.size(); i++) {
+            r_pre.push_back(preorder[i]);
+            r_in.push_back(inorder[i]);
+        }
+        // 构造二叉树
+        TreeNode *root = new TreeNode(preorder[0]);
+        root->left = buildTree(l_pre, l_in);
+        root->right = buildTree(r_pre, r_in);
+        return root;
+    }
+};
+```
+大量复制元素拖慢速度，优化一下(可以作为作业)：
+
+    传递迭代器控制区间，避免复制元素提升速度。
+
+```C++
+class Solution {
+public:
+    TreeNode* build(vector<int>::iterator pre_arr, vector<int>::iterator in_arr, int n) {
+        if (n == 0) return nullptr;
+        int pos = 0;
+        while (*pre_arr != *(in_arr + pos)) pos++;
+        TreeNode *root = new TreeNode(*pre_arr);
+        root->left = build(pre_arr + 1, in_arr, pos);
+        root->right = build(pre_arr + pos + 1, in_arr + pos + 1, n - pos - 1);
+        return root;
+    }
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        return build(preorder.begin(), inorder.begin(), preorder.size());
+    }
+};
+```
+
+**leetcode 222. 完全二叉树的节点个数**
+
+    递归无脑做法：一个一个数，时间复杂度为O(n)
+
+```C++
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        if (root == nullptr) return 0;
+        return countNodes(root->left) + countNodes(root->right) + 1;
+    }
+};
+```
+
+    二分查找 + 位运算可以优化为O(log^2 n)
+        0.首先确定的是，最后一个叶子结点的编号就是结点总数，找到叶子结点的范围利用二分查找，找到最后一个元素的位置。
+        1.先一直顺着左子树遍历到叶子结点，统计出树的层数
+        2.利用完全二叉树的性质，可以算出叶子结点的编号范围，在次范围利用二分查找。
+        3.使用二进制优化：
+            第0层有一个二进制位
+            第1层有两个二进制位
+            第2层有三个二进制位
+            第n层有2^(n - 1)个二进制位
+
+            对于每一层的二进制位可以分析出该编号的结点在二叉树中的位置，
+            比如：
+                5的二进制是101，在第2层(0层开始)，最左边的1表示根节点，第二位的0表示5在根节点的左子树，第三位的1表示5在根结点的左子树的右子树。
+
+                9的二进制是1000，在第三层，位置从根开始：
+                根左左右就是9的位置
+
+```C++
+class Solution {
+public:
+    bool find(TreeNode *root, int h, int mid) {
+        int bit = 1 << (h - 1); // 次高位开始判断左右，因为最高位表示根节点
+        TreeNode *p = root;
+        while (p && bit > 0) {
+            if (mid & bit) {
+                p = p->right; // 如果比对的位存在说明在右子树
+            } else {
+                p = p->left;
+            }
+            bit >>= 1;
+        }
+        return p != nullptr; // p不为空即p存在
+    }
+    int countNodes(TreeNode* root) {
+        if (root == nullptr) return 0;
+        int h = 0;
+        TreeNode *p = root;
+        while (p->left) h++, p = p->left; // 一直顺着左子树遍历到叶子结点，统计出树的层数
+        int l = 1 << h, r = (1 << (h + 1)) - 1; 
+        while (l < r) {
+            // +1计算出的中点mid在右半部分，不然会l < r导致死循环
+            int mid = (r - l + 1) / 2 + l;
+            if (find(root, h, mid))     l = mid; // 找到说明在右半部分
+            else    r = mid - 1;  // 没找到说明在左半部分
+        }
+        return l;
+    }
+};
+```
+**leetcode LCR 174. 寻找二叉搜索树中的目标节点**
+
+![alt text](image-24.png)
+
+    二叉搜索(排序)树：  右子树的值比根结点大，左子树的值比根结点小。  
+    如果对二叉搜索树进行中序遍历：结果就是一个有序序列
+
+    题目要求找到第k大的结点：
+        右子树代表比根大的值，左子树代表比根小的值
+        右 根 左的顺序找答案
+        右子树的结点数量>=k，说明第k大的数在右子树。
+        右子树结点数量+1=k，说明第k大的数在根
+        右子树结点数量+1<k，说明第k大的数在左子树
+
+![alt text](image-25.png)
+
+```C++
+class Solution {
+public:
+    int getConut(TreeNode *root) {
+        if (root == nullptr) return 0;
+        return getConut(root->left) + getConut(root->right) + 1;
+    }
+    int findTargetNode(TreeNode* root, int cnt) {
+        int cnt_R = getConut(root->right);
+        if (cnt <= cnt_R) return findTargetNode(root->right, cnt);
+        if (cnt == cnt_R + 1) return root->val;
+        return findTargetNode(root->left, cnt - cnt_R - 1); // 总结点数-右结点数-根结点
+    }
+};
+```
+
+    或者中序遍历取倒数k个：
+
+```C++
+class Solution {
+public:
+    void in_order(TreeNode *root, vector<int> &ans) {
+        if (root == nullptr) return;
+        in_order(root->left, ans);
+        ans.push_back(root->val);
+        in_order(root->right, ans);
+        return;
+    }
+    int findTargetNode(TreeNode* root, int cnt) {
+        vector<int> ans;
+        in_order(root, ans);
+        return ans[ans.size() - cnt];
+    }
+};
+```

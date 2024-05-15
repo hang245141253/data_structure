@@ -15,21 +15,24 @@ struct TreeNode {
 
 class Solution {
 public:
-    void getResult(TreeNode* root, int k, vector<vector<int>> &ans) {
-        if (root == nullptr) return;
-        if (k == ans.size()) ans.push_back(vector<int>());
-        ans[k].push_back(root->val);
-        getResult(root->left, k + 1, ans);
-        getResult(root->right, k + 1, ans);
+    int getHeight(TreeNode *root) {
+        if (root == nullptr) return 0;
+        int l = getHeight(root->left);
+        int r = getHeight(root->right);
+        if (l < 0 || r < 0) return -1;
+        if (abs(l - r) > 1) return -1;
+        return max(l, r) + 1;
     }
-    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
-        vector<vector<int>> ans;
-        getResult(root, 0, ans);
-        for (int i = 1; i < ans.size(); i += 2) {
-            reverse(ans[i].begin(), ans[i].end());
-        }
-        return ans;
+    bool isBalanced(TreeNode* root) {
+        return getHeight(root) >= 0;
     }
 };
 
-int main() {}
+
+int main() {
+    int level;
+    cin >> level;
+    int bits = 1 << (level - 1);
+    cout << bits << endl;
+    return 0;
+}
