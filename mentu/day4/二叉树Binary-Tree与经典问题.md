@@ -907,3 +907,159 @@ public:
     }
 };
 ```
+**leetcode LCR 143. 子结构判断**
+
+    简单题，在A树(递归)寻找val与B树的根val相同的结点，然后一一比对看看是不是完全相同的子树，相同返回true，不同继续递归寻找。
+
+```C++
+class Solution {
+public:
+    // 检查以A和B为根节点的两棵树是否相等
+    bool is_Match(TreeNode *A, TreeNode *B) {
+        if (B == NULL) return true;  // B已经遍历完了
+        if (A == NULL) return false; // A为空而B不为空，说明B的节点比A多
+        if (A->val != B->val) return false;
+        return is_Match(A->left, B->left) && is_Match(A->right, B->right);
+    }
+    bool isSubStructure(TreeNode* A, TreeNode* B) {
+        if (B == NULL || A == NULL) return false;
+        if (A->val == B->val && is_Match(A, B)) return true;
+        return isSubStructure(A->left, B) || isSubStructure(A->right, B);
+    }
+};
+```
+
+**leetcode 662. 二叉树最大宽度**
+
+    参考完全二叉树的性质，根结点编号为i，左孩子编号为2i，右孩子的编号为2i+1
+    然后对树的根结点编号为0，顺着往下给每个结点都编号
+    每层中从左到右差值最大值就是二叉树的最大宽度。
+
+![alt text](image-26.png)
+
+    如何求二叉树每行宽度的最大差值：利用队列，每次处理处理一行，求其编号的差值。
+
+![alt text](image-27.png)
+
+这里使用pair将结点和我们人为添加的编号进行绑定。
+
+**新知识：std::pair**    
+    
+    std::pair 是 C++ 标准库中定义的一个模板类，用于将两个值组合成一个单元。它在很多情况下都非常有用，尤其是当你需要将两个不同类型的值作为一个单元来处理时。
+
+    std::pair 包含两个公共成员变量 first 和 second，它们分别用于存储两个值。这两个值的类型可以是任意类型，包括基本类型、自定义类型、指针等。
+
+可以把pair理解为一种结构体：
+```C++
+struct pair {
+    T1 first;
+    T2 second;
+};
+```
+
+
+pair与map的关系：
+
+    1.在 std::map 中，每个元素都是一个键值对，键和值之间的关系可以用 std::pair 来表示。
+    2.std::pair 可以作为 std::map 的键值对的类型，用于表示 std::map 中的每个元素。
+    3.在使用 std::map 时，通常会使用 std::pair 来构造每个键值对，然后将其插入到 std::map 中。
+
+
+```C++
+class Solution {
+public:
+    typedef pair<TreeNode *, int> PNI;
+    int widthOfBinaryTree(TreeNode* root) {
+        queue<PNI> q;
+        q.push(PNI(root, 0));
+        int ans = 0; // 打擂台求最大值
+        while(!q.empty()) {
+            int cnt = q.size(); // 记录上一层结点的个数
+            int l = q.front().second, r; // 记录编号最小最大值
+
+            for (int i = 0; i < cnt; i++) { // 下一行入队
+                TreeNode *n = q.front().first;
+                int ind = q.front().second;
+                r = ind; // 更新编号最大值
+                if (n->left) q.push(PNI(n->left, ind * 2));
+                if (n->right) q.push(PNI(n->right, ind * 2 + 1));
+                q.pop(); // 上一行出队
+            }
+            ans = max(ans, r - l + 1);
+        }
+        return ans;
+    }
+};
+```
+
+报错：爆int了
+```C++
+Line 27: Char 54: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int' (solution.cpp)
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior prog_joined.cpp:36:54
+```
+
+    自由尝试，可以改long long试试[Doge] 
+
+原因：
+
+    这样编号会导致编号的范围越来越大。
+    每层以2^n的速度增长。
+
+![alt text](image-28.png)
+
+解决：
+
+    如果将元素4的编号设置为0，元素5的编号设置为1.
+    效果则是等价的。
+
+    如何在不影响答案的前提下缩小编号范围是我们需要思考的。
+
+    每个孩子的结点是根据父亲结点计算的，从减小父结点编号入手，
+    如果一个树只有右子树没有左子树，可以考虑编号整体向左偏移到0；
+    言外之意就是本行编号最小的结点是几就向左偏移几。
+    
+
+    优化编号(站在某个结点考虑它的左右孩子)：
+    左孩子：(结点的编号-本行的最小编号)*2
+    右孩子：(结点的编号-本行的最小编号)*2+1 
+
+![alt text](image-29.png)
+
+    题目明确说：题目数据保证答案将会在  32 位 带符号整数范围内。
+     
+但是
+
+```C++
+Line 28: Char 58: runtime error: signed integer overflow: 2147483644 * 2 cannot be represented in type 'int' (solution.cpp)
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior prog_joined.cpp:37:58
+```
+
+    *2还是会爆int，因为乘法会爆溢出，改用<<1，或者改unsigned int，AC。
+
+```C++
+class Solution {
+public:
+    typedef pair<TreeNode *, int> PNI;
+    int widthOfBinaryTree(TreeNode* root) {
+        queue<PNI> q;
+        q.push(PNI(root, 0));
+        int ans = 0; // 打擂台求最大值
+        while(!q.empty()) {
+            int cnt = q.size(); // 记录上一层结点的个数
+            int l = q.front().second, r; // 记录编号最小最大值
+
+            for (int i = 0; i < cnt; i++) { // 下一行入队
+                TreeNode *n = q.front().first;
+                int ind = q.front().second;
+                r = ind; // 更新编号最大值
+                // printf("l = %d, r = %d\n", l, r);
+                if (n->left) q.push(PNI(n->left, (r - l) << 1));
+                if (n->right) q.push(PNI(n->right, ((r - l) << 1) + 1));
+                q.pop(); // 上一行出队
+            }
+            ans = max(ans, r - l + 1);
+        }
+        return ans;
+    }
+};
+```
