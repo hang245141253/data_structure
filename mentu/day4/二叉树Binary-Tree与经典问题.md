@@ -412,19 +412,21 @@ public:
 
 ![alt text](image-14.png)
 
-堆、队列：需要不断的增加删除、维护最值。
+堆、优先队列：需要不断的增加删除、维护最值，使用堆、优先队列。
 
-森林结构“并查集”：解决连通性问题
+字符串匹配算法：字典树、AC自动机。
+
+森林结构“并查集”：解决连通性问题。
 
 (2-3树不讲)
 
-这几类二叉排序树，通常情况下是作为各种语言标准库中重要的数据检索容器的底层实现。
+这几类二叉排序树（二叉搜索树），通常情况下是作为各种语言标准库中重要的数据检索容器的底层实现。
 
 比如：map set两个容器的底层实现是红黑树
 
-文件系统不属于二叉排序树(位置放错了)
+B树、B+树属于平衡多路搜索树，不属于二叉排序树(位置放错了)
 
-文件系统、数据库底层相关的数据结构：B树、B+树，也是一类平衡树（多叉树）
+文件系统、数据库底层相关的数据结构：B树、B+树，也是一类平衡树（可以理解为多叉排序树）
 
 ### 作用2：练习递归技巧的最佳选择
 
@@ -440,20 +442,30 @@ public:
 
 思考根节点会不会有右孩子？
 
-会，表示是另一个树的根节点，也就是表示了森林。
+    会，表示是另一个树的根节点，也就是表示了森林。
 
 ![alt text](image-18.png)
 
-下图是Alpha Go中的一段源代码的注释，描述一段存储棋盘的代码。正常用树表示肯定是100多叉树，但是在Alpha Go中是用二叉树存储（左孩子右兄弟）。
+左孩子右兄弟表示法的好处：
+
+    因为二叉树存储的边(指针域)更少，会极大的节约空间。
+
+![alt text](image-31.png)
+
+下图是Alpha Go中的一段源代码的注释，描述一段存储棋盘的代码。
+
+    正常用树表示肯定是100多叉树，但是在Alpha Go中是用二叉树存储（左孩子右兄弟）。
 
 ![alt text](image-16.png)
 
-因为二叉树存储的边(指针域)更少，会极大的节约空间。
+
 
 
 ## 二叉树经典题-二叉树的基本操作
 
 **leetcode 144-二叉树的前序遍历**
+
+练习给递归函数一个明确的意义。
 
 ```C++
 class Solution {
@@ -562,7 +574,13 @@ public:
 
     用dfs做，设置一个变量k表示当前在第几层，
 
-    每一层用vector存，来新的元素push_back即可
+    先往深了搜(可着左边搜到底)，如果没有数组要创建一个vector然后push_back
+
+    先0层，
+    然后1层的9，没数组开一个数组
+    然后1层的20，push_back
+    然后2层的15，没数组开一个数组
+    然后2层的7，push_back
 
 
 ```C++
@@ -687,40 +705,47 @@ public:
 class Solution {
 public:
     void sum(TreeNode *root, int &s, const int &targetSum, bool &ans) {
-        if (ans)     return;
-        s += root->val;
+        if (ans)     return; // 找到了答案
+        s += root->val; // 累加节点的值
         if (root->left == nullptr && root->right == nullptr && s == targetSum) {
-            ans = 1;
+        // 如果是叶子节点并且达成目标值
+            ans = 1; // 找到了
             return;
         }
+        // dfs
         if (root->left) sum(root->left, s, targetSum, ans);
         if (root->right) sum(root->right, s, targetSum, ans);
-        s -= root->val;
+        s -= root->val; // 回溯
     }
 
     bool hasPathSum(TreeNode* root, int targetSum) {
         if (root == nullptr) return 0;
-        int s = 0;
-        bool ans = 0;
+        int s = 0; // 累加求和
+        bool ans = 0; // 找到ans return的标记
         sum(root, s, targetSum, ans);
         return ans;
     }
 };
 ```
 优化：
+
+    函数的语义：从某节点开始到叶子节点，是否有路径和为targetSum，有的话True，没有则False
+
 ```C++
 class Solution {
 public:
     bool hasPathSum(TreeNode* root, int targetSum) {
         if (root == nullptr) return false;
+        // 用于判断是否走到了叶子结点，如果走到叶子结点根据路径和是否满足targetSum的结果作为返回值，这个用来控制下面两个if中条件hasPathSumd()的
         if (!root->left && !root->right) return root->val == targetSum;
         if (root->left && hasPathSum(root->left, targetSum - root->val)) return true;
         if (root->right && hasPathSum(root->right, targetSum - root->val)) return true;
-        return false;
+        // 这两个if只有找到了符合题意的路径才会return true
+        return false; // return true和return false才是真正返回这个函数答案的地方。
     }
 };
 ```
-总结：
+总结：在递归函数中，如果递归的部分在if的条件中，那么他前面的return都是用来控制if的，后面的return才是真正函数要返回的答案值
 
     if (!root->left && !root->right) return root->val == targetSum;
     是用于判断是否走到了叶子结点，如果走到叶子结点根据路径和是否满足targetSum的结果作为返回值，这个用来控制：
@@ -732,13 +757,15 @@ public:
 
     return true和return false才是真正返回这个函数答案的地方。
 
+
+
 **leetcode 105. 从前序与中序遍历序列构造二叉树**
 
     构造的过程肯定是递归的，
         先从前序中找到root，然后在中序中找到这个值，切分好左右子树
         然后两次递归恢复树，把树挂在root上
 
-        1.找root
+        1.找root，分割左右子树
         2.递归建立左子树
         3.递归建立右子树  
 
