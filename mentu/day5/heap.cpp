@@ -8,6 +8,18 @@ void push(int x) {
     
 }
 
+void pop() {
+
+}
+
+int top() {
+    return data[0];
+}
+
+int size() {
+    return cnt;
+}
+
 int main() {
     
     return 0;
