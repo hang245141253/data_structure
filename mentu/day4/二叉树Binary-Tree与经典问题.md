@@ -1037,7 +1037,7 @@ SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior prog_joined.cpp:36:54
 
 原因：
 
-    这样编号会导致编号的范围越来越大。
+    这样编号会导致编号的范围越来越大。导致ind*2越界
     每层以2^n的速度增长。
 
 ![alt text](image-28.png)
@@ -1050,7 +1050,7 @@ SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior prog_joined.cpp:36:54
     如何在不影响答案的前提下缩小编号范围是我们需要思考的。
 
     每个孩子的结点是根据父亲结点计算的，从减小父结点编号入手，
-    如果一个树只有右子树没有左子树，可以考虑编号整体向左偏移到0；
+    如果一个树只有右子树没有左子树，可以考虑编号整体向左偏移l；
     言外之意就是本行编号最小的结点是几就向左偏移几。
     
 
@@ -1102,6 +1102,8 @@ public:
 **leetcode 968. 监控二叉树**
 
 其实不是二叉树的题，而是一个树状dp题。
+
+![alt text](image-30.png)
 
 **如何思考？**
 
