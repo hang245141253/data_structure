@@ -902,11 +902,19 @@ public:
 ```C++
 class Solution {
 public:
+    // 递归获得某节点构成的子树的节点数量
     int getConut(TreeNode *root) {
         if (root == nullptr) return 0;
         return getConut(root->left) + getConut(root->right) + 1;
     }
+    // 函数语义：在某树中找第cnt大的值
     int findTargetNode(TreeNode* root, int cnt) {
+        // 以右子树节点个数判断
+        /*
+        右子树的结点数量>=k，说明第k大的数在右子树，所以右子树中找第k大的值就是解
+        右子树结点数量+1=k，说明第k大的数就是根节点
+        右子树结点数量+1<k，说明第k大的数在左子树，所以在左子树中找第cnt - cnt_R - 1大的值就是解
+        */
         int cnt_R = getConut(root->right);
         if (cnt <= cnt_R) return findTargetNode(root->right, cnt);
         if (cnt == cnt_R + 1) return root->val;
