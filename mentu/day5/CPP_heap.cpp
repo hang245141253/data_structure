@@ -4,32 +4,42 @@
 #include <algorithm>
 using namespace std;
 
-// 定义一个堆类，继承自 vector<int>
-class Heap : public vector<int> {
+class Heap {
 public:
+    vector<int> heap;
+    // cmp 是一个成员变量，用于存储一个函数对象
+    function<bool(int, int)> cmp; // 函数原型bool operator()(const _Tp& __x, const _Tp& __y) const
+    
     // 构造函数，接受一个比较函数
-    Heap(function<bool(int, int)> cmp) : cmp(cmp) {}
-    
-    // 向堆中添加元素，并维护堆的性质
-    void push(const int &a) {
-        this->push_back(a); // 将新元素添加到 vector 的末尾
-        push_heap(this->begin(), this->end(), cmp); // 调整堆，使其保持性质
+    Heap(function<bool(int, int)> cp) : cmp(cp) {}
+
+    int top() {
+        if (!empty())     return heap[0];
+        cerr << "Error: top from an empty heap" << endl;
+        return INT32_MIN;
     }
     
-    // 移除堆顶元素，并维护堆的性质
+    bool empty() {return heap.empty();}
+    
+    int size() {return heap.size();}
+    
+    void push(int x) {
+        heap.push_back(x);
+        push_heap(heap.begin(), heap.end(), cmp);
+    }
+    
     void pop() {
-        pop_heap(this->begin(), this->end(), cmp); // 将堆顶元素移到末尾
-        this->pop_back(); // 移除末尾元素
+        if (!empty()) {
+            pop_heap(heap.begin(), heap.end(), cmp);
+            heap.pop_back();
+        } else {
+            cerr << "Error: pop from an empty heap" << endl;
+        }
     }
-    
-    // 返回堆顶元素
-    int &top() {
-        return this->at(0); // 堆顶元素始终位于 vector 的第一个位置
+
+    vector<int> getHeap() {
+        return heap;
     }
-    
-private:
-    // 比较函数，用于维护堆的性质
-    function<bool(int, int)> cmp;
 };
 
 int main() {
@@ -70,6 +80,35 @@ int main() {
 }
 
 
+// // 定义一个堆类，继承自 vector<int>
+// class Heap : public vector<int> {
+// public:
+//     // 构造函数，接受一个比较函数
+//     Heap(function<bool(int, int)> cmp) : cmp(cmp) {}
+    
+//     // 向堆中添加元素，并维护堆的性质
+//     void push(const int &a) {
+//         this->push_back(a); // 将新元素添加到 vector 的末尾
+//         push_heap(this->begin(), this->end(), cmp); // 调整堆，使其保持性质
+//     }
+    
+//     // 移除堆顶元素，并维护堆的性质
+//     void pop() {
+//         pop_heap(this->begin(), this->end(), cmp); // 将堆顶元素移到末尾
+//         this->pop_back(); // 移除末尾元素
+//     }
+    
+//     // 返回堆顶元素
+//     int &top() {
+//         return this->at(0); // 堆顶元素始终位于 vector 的第一个位置
+//     }
+    
+// private:
+//     // 比较函数，用于维护堆的性质
+//     function<bool(int, int)> cmp;
+// };
+
+// ------------------------------------------------
 
 // #include <iostream>
 // #include <vector>
