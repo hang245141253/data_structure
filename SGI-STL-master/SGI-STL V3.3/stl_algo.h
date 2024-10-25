@@ -1432,7 +1432,7 @@ void __introsort_loop(_RandomAccessIter __first,
     --__depth_limit;
     _RandomAccessIter __cut =
       __unguarded_partition(__first, __last,
-                            _Tp(__median(*__first,
+                            _Tp(__median(*__first,  // 分区基准点选取：三点取中法
                                          *(__first + (__last - __first)/2),
                                          *(__last - 1))));
     __introsort_loop(__cut, __last, (_Tp*) 0, __depth_limit);
@@ -1447,16 +1447,18 @@ void __introsort_loop(_RandomAccessIter __first,
 {
   while (__last - __first > __stl_threshold) {
     if (__depth_limit == 0) {
-      partial_sort(__first, __last, __last, __comp);
+      partial_sort(__first, __last, __last, __comp); // 堆排序
       return;
     }
+
+    // 快速排序
     --__depth_limit;
     _RandomAccessIter __cut =
-      __unguarded_partition(__first, __last,
+      __unguarded_partition(__first, __last,    // 无监督分区：
                             _Tp(__median(*__first,
                                          *(__first + (__last - __first)/2),
                                          *(__last - 1), __comp)),
-       __comp);
+                            __comp);
     __introsort_loop(__cut, __last, (_Tp*) 0, __depth_limit, __comp);
     __last = __cut;
   }
@@ -1468,10 +1470,10 @@ inline void sort(_RandomAccessIter __first, _RandomAccessIter __last) {
   __STL_REQUIRES(typename iterator_traits<_RandomAccessIter>::value_type,
                  _LessThanComparable);
   if (__first != __last) {
-    __introsort_loop(__first, __last,
+    __introsort_loop(__first, __last,        // 混合排序：快速+堆
                      __VALUE_TYPE(__first),
-                     __lg(__last - __first) * 2);
-    __final_insertion_sort(__first, __last);
+                     __lg(__last - __first) * 2); // 递归深度的limit
+    __final_insertion_sort(__first, __last); // 插入排序
   }
 }
 

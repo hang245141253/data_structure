@@ -17,7 +17,7 @@ void add_edge(int u, int v) {
 /*DFS模板
 void dfs(int u) {
     vis[u] = 1;
-    for (int i = Head[u]; i != -1; i = Head[i]) {
+    for (int i = Head[u]; i != -1; i = Next[i]) {
         int j = Edge[i];
         if (!vis[j]) dfs(j);
     }
