@@ -17,7 +17,7 @@ int main() {
 
     int d = 0;  // 存n进制转10进制 
     for (int i = 0; i < num.size(); i++) {
-        d += num[i] % n * pow(n, i);
+        d += num[i] * pow(n, i);
     }
 
     string ans;
