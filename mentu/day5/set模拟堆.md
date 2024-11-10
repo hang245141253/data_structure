@@ -122,26 +122,43 @@ int main() {
  * 
 */
 
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
         typedef pair<int, int> PII;
         int n = lists.size();
         set<PII> s;
+
+        // 构建集合
         for (int i = 0; i < n; i++) {
             if (lists[i] == nullptr) continue;
             s.insert(PII(lists[i]->val, i));
         }
+
+        // 新建链表
         ListNode new_head, *p = &new_head, *q;
         new_head.next = nullptr;
+
         while (s.size()) {
-            PII a = *s.begin();
+            PII a = *s.begin(); // 拿出最小值准备插入到新链表
             s.erase(s.begin());
-            q = lists[a.second];
-            lists[a.second] = lists[a.second]->next;
-            p->next = q;
+            // a.second是某链表的头节点
+            q = lists[a.second];  // 当前节点（即最小节点）赋值给 q，方便后面将 q 插入到合并链表中
+            lists[a.second] = lists[a.second]->next; // 该链表的当前节点推进到下一个节点，以便下次 set 插入时可以处理下一个节点。
+            p->next = q; // 头插
             q->next = nullptr;
             p = q;
+            // 如果这个链表还有元素，扔到set中
             if (lists[a.second]) {
                 s.insert(PII(lists[a.second]->val, a.second));
             }
