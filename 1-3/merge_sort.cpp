@@ -21,7 +21,7 @@ void merge_sort(int *arr, int l, int r) {
     while (p1 < mid || p2 < r) { // 当两个数组其中之一还有元素没排好的时候
         // 思考：什么情况下把第一个数组中的元素放进temp数组中
         // 两个情况：1.第二个数组没有元素了 2.第一个数组不为空且p1的元素<p2的元素
-        if (p2 == r || (p1 < mid && arr[p1] < arr[p2])) {
+        if (p2 == r || (p1 < mid && arr[p1] < arr[p2])) {  // 最小交换次数、非严格下降序列用<=
             temp[k++] = arr[p1++];
         } else {
             temp[k++] = arr[p2++];

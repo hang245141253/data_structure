@@ -3,6 +3,9 @@
 #include <vector>
 using namespace std;
 
+
+
+
 /*
 
 书面上：
@@ -13,7 +16,8 @@ using namespace std;
 
 编码上：
 数据结构 = 结构定义 + 结构操作（增删改查）
-
+    int arr[10];
+    int *p = new int[10];
     结构定义可使用：
     静态定义（静态区/全局区） or 动态定义（堆区）
 
@@ -146,6 +150,8 @@ void clear(Vector& vec) {  // 销毁操作
 int main_test() {
     Vector vec;
     init(vec);
+    // int arr[10] = {1,2,3};
+    
 
     push_back(vec, 1);
     push_back(vec, 2);
