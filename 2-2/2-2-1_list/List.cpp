@@ -109,6 +109,25 @@ void erase(ListNode*& head, size_t index) {
     }
 }
 
+// 删除指定值的节点
+void remove(ListNode* &head, ElemType val) {
+    ListNode* cur = head;
+    ListNode* prev = nullptr;
+    while (cur) {
+        if (cur->val == val) {  // 找到目标节点
+            if (prev) {
+                prev->next = cur->next;  // 前一个节点的next指向目标节点的next
+            } else {
+                head = cur->next;  // 如果目标节点是头节点，更新头节点为下一个节点
+            }
+            delete cur;  // 删除目标节点
+            return;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
+}
+
 // 修改指定位置的节点值
 void set(ListNode* &head, size_t index, ElemType value) {
     ListNode* cur = head;
@@ -187,7 +206,34 @@ void print(ListNode* head) {
 
 // 测试代码
 int main() {
-    ListNode* head = nullptr;  // 初始化空链表
+    ListNode *head = nullptr;  // 初始化空链表(不带头节点)
+    ListNode *head1 = new ListNode(0); // 带头节点的链
+
+    ElemType val = 123;
+    // 不带头节点的头部插入
+    if (head == nullptr) {
+        head = new ListNode(val);
+    } else {
+        ListNode *new_node = new ListNode(6);
+        new_node->next = head;
+        head = new_node;
+    }
+
+    // 带头节点的头部插入
+    ListNode *new_node1 = new ListNode(123);
+    new_node1->next = head1->next;
+    head1->next = new_node1;
+
+    // 不带头节点删除头部
+    ListNode *tmp = head;
+    head = head->next;
+    delete tmp;
+
+    // 带头节点删除头部
+    ListNode *tmp1 = head1->next;
+    head1->next = head1->next->next;
+    delete tmp1;
+
 
     push_back(head, 1);  // 在尾部插入1
     push_back(head, 2);  // 在尾部插入2
